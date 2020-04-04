@@ -3,8 +3,11 @@ package com.yan.dubbo.admin.model;
 import com.alibaba.dubbo.common.Constants;
 
 /**
+ * date:2020-04-04
+ * Author:Y'an
  * http://dubbo.apache.org/zh-cn/docs/user/references/xml/dubbo-consumer.html
  */
+
 public class DubboConsumer extends DubboInfo {
     private static final long serialVersionUID = 2743499500899139042L;
 

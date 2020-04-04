@@ -17,6 +17,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * date:2020-04-04
+ * Author:Y'an
+ */
+
 public class DubboAdminTool {
 
     private static ApplicationConfig applicationConfig = new ApplicationConfig("dubbo-admin");

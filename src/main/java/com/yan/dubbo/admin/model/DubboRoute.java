@@ -3,6 +3,8 @@ package com.yan.dubbo.admin.model;
 import com.alibaba.dubbo.common.Constants;
 
 /**
+ * date:2020-04-04
+ * Author:Y'an
  * http://dubbo.apache.org/zh-cn/docs/user/demos/routing-rule-deprecated.html
  */
 public class DubboRoute extends DubboInfo {

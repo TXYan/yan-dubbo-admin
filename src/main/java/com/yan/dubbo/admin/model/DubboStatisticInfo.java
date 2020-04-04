@@ -2,6 +2,11 @@ package com.yan.dubbo.admin.model;
 
 import java.io.Serializable;
 
+/**
+ * date:2020-04-04
+ * Author:Y'an
+ */
+
 public class DubboStatisticInfo implements Serializable {
     private static final long serialVersionUID = 6056446649517777168L;
 

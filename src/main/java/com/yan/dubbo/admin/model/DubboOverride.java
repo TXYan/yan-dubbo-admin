@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * date:2020-04-04
+ * Author:Y'an
  * http://dubbo.apache.org/zh-cn/docs/user/demos/config-rule-deprecated.html
  */
 public class DubboOverride extends DubboInfo {

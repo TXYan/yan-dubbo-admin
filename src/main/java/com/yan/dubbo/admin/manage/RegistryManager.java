@@ -14,6 +14,11 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
+/**
+ * date:2020-04-04
+ * Author:Y'an
+ */
+
 @Slf4j
 @Component
 public class RegistryManager implements Serializable {

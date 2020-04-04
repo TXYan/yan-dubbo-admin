@@ -6,6 +6,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 
+/**
+ * date:2020-04-04
+ * Author:Y'an
+ */
+
 public class DubboInfo implements Serializable {
     private static final long serialVersionUID = -4448383927730115888L;
 
