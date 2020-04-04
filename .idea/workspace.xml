@@ -122,7 +122,7 @@
       <workItem from="1585549132249" duration="1000" />
       <workItem from="1585563712484" duration="51061000" />
       <workItem from="1585965055162" duration="16519000" />
-      <workItem from="1586009313756" duration="1126000" />
+      <workItem from="1586009313756" duration="1555000" />
     </task>
     <servers />
   </component>
@@ -207,6 +207,10 @@
       <screen x="0" y="23" width="1680" height="1027" />
     </state>
     <state width="1570" height="244" key="GridCell.Tab.2.right/0.23.1680.1027@0.23.1680.1027" timestamp="1586009170169" />
+    <state x="422" y="278" key="Vcs.Push.Dialog.v2" timestamp="1586011115777">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="422" y="278" key="Vcs.Push.Dialog.v2/0.23.1680.1027@0.23.1680.1027" timestamp="1586011115777" />
     <state x="485" y="300" width="673" height="472" key="find.popup" timestamp="1586009630875">
       <screen x="0" y="23" width="1680" height="1027" />
     </state>
