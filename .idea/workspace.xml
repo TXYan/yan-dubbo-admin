@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7a25b907-f2fb-4045-b775-70e3d6a42168" name="Default Changelist" comment="" />
+    <list default="true" id="7a25b907-f2fb-4045-b775-70e3d6a42168" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/yan/dubbo/admin/YanDubboAdmin.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/yan/dubbo/admin/controllers/ManageController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/yan/dubbo/admin/manage/RegistryManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/yan/dubbo/admin/manage/RegistryOperator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/yan/dubbo/admin/model/DubboConsumer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/yan/dubbo/admin/model/DubboInfo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/yan/dubbo/admin/model/DubboOverride.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/yan/dubbo/admin/model/DubboProvider.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/yan/dubbo/admin/model/DubboRoute.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/yan/dubbo/admin/model/DubboStatisticInfo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/yan/dubbo/admin/model/FilterConstants.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/yan/dubbo/admin/model/RegistryAdminConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/yan/dubbo/admin/tools/DubboAdminTool.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FavoritesManager">
-    <favorites_list name="zhipin-dubbo-admin" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -21,20 +37,12 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="MavenImportPreferences">
-    <option name="importingSettings">
-      <MavenImportingSettings>
-        <option name="importAutomatically" value="true" />
-      </MavenImportingSettings>
-    </option>
-  </component>
   <component name="ProjectId" id="1ZkhOlvM2qmimHq8vQsIYKaEzAi" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
@@ -46,7 +54,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Modules" />
@@ -55,12 +63,16 @@
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources" />
+      <recent name="$PROJECT_DIR$/src/main/java/com/yan/dubbo/admin" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.zhipin.dubbo.admin.tools" />
       <recent name="com.zhipin.dubbo.admin.sync" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/main/resources" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources/config" />
     </key>
   </component>
   <component name="RunManager" selected="Spring Boot.YanDubboAdmin">
@@ -80,6 +92,7 @@
     <configuration name="YanDubboAdmin" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="yan-dubbo-admin" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.yan.dubbo.admin.YanDubboAdmin" />
+      <option name="VM_PARAMETERS" value="-Ddisconf.env=qa" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -94,18 +107,6 @@
         <item itemvalue="Application.DubboAdminTool" />
       </list>
     </recent_temporary>
-  </component>
-  <component name="ServiceViewManager">
-    <option name="viewStates">
-      <list>
-        <serviceView>
-          <treeState>
-            <expand />
-            <select />
-          </treeState>
-        </serviceView>
-      </list>
-    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration>$USER_HOME$/.subversion</configuration>
@@ -122,111 +123,46 @@
       <workItem from="1585549132249" duration="1000" />
       <workItem from="1585563712484" duration="51061000" />
       <workItem from="1585965055162" duration="16519000" />
-      <workItem from="1586009313756" duration="1890000" />
+      <workItem from="1586009313756" duration="5442000" />
+      <workItem from="1586228584369" duration="11000" />
+      <workItem from="1588574738700" duration="1181000" />
+      <workItem from="1588580045409" duration="1794000" />
+      <workItem from="1609068721767" duration="1064000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="2" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="286" y="200" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586009425473">
+    <state x="304" y="198" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1609069791883">
       <screen x="0" y="23" width="1680" height="1027" />
     </state>
-    <state x="286" y="200" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1680.1027@0.23.1680.1027" timestamp="1586009425473" />
-    <state x="635" y="249" key="#com.intellij.ide.util.MemberChooser" timestamp="1585998068917">
+    <state x="304" y="198" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1680.1027@0.23.1680.1027" timestamp="1609069791883" />
+    <state x="541" y="291" width="598" height="490" key="find.popup" timestamp="1609069770359">
       <screen x="0" y="23" width="1680" height="1027" />
     </state>
-    <state x="635" y="249" key="#com.intellij.ide.util.MemberChooser/0.23.1680.1027@0.23.1680.1027" timestamp="1585998068917" />
-    <state x="585" y="250" key="#xdebugger.evaluate" timestamp="1586007283894">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state x="585" y="250" key="#xdebugger.evaluate/0.23.1680.1027@0.23.1680.1027" timestamp="1586007283894" />
-    <state width="482" height="466" key="DebuggerActiveHint" timestamp="1586008413160">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state width="482" height="466" key="DebuggerActiveHint/0.23.1680.1027@0.23.1680.1027" timestamp="1586008413160" />
-    <state width="1570" height="280" key="GridCell.Tab.0.bottom" timestamp="1586010522647">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state width="1570" height="280" key="GridCell.Tab.0.bottom/0.23.1680.1027@0.23.1680.1027" timestamp="1586010522647" />
-    <state width="1570" height="280" key="GridCell.Tab.0.center" timestamp="1586010522645">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state width="1570" height="280" key="GridCell.Tab.0.center/0.23.1680.1027@0.23.1680.1027" timestamp="1586010522645" />
-    <state width="1570" height="280" key="GridCell.Tab.0.left" timestamp="1586010522645">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state width="1570" height="280" key="GridCell.Tab.0.left/0.23.1680.1027@0.23.1680.1027" timestamp="1586010522645" />
-    <state width="1570" height="280" key="GridCell.Tab.0.right" timestamp="1586010522646">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state width="1570" height="280" key="GridCell.Tab.0.right/0.23.1680.1027@0.23.1680.1027" timestamp="1586010522646" />
-    <state width="1570" height="280" key="GridCell.Tab.1.bottom" timestamp="1586010522648">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state width="1570" height="280" key="GridCell.Tab.1.bottom/0.23.1680.1027@0.23.1680.1027" timestamp="1586010522648" />
-    <state width="1570" height="280" key="GridCell.Tab.1.center" timestamp="1586010522648">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state width="1570" height="280" key="GridCell.Tab.1.center/0.23.1680.1027@0.23.1680.1027" timestamp="1586010522648" />
-    <state width="1570" height="280" key="GridCell.Tab.1.left" timestamp="1586010522647">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state width="1570" height="280" key="GridCell.Tab.1.left/0.23.1680.1027@0.23.1680.1027" timestamp="1586010522647" />
-    <state width="1570" height="280" key="GridCell.Tab.1.right" timestamp="1586010522648">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state width="1570" height="280" key="GridCell.Tab.1.right/0.23.1680.1027@0.23.1680.1027" timestamp="1586010522648" />
-    <state width="1570" height="244" key="GridCell.Tab.2.bottom" timestamp="1586009170170">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state width="1570" height="244" key="GridCell.Tab.2.bottom/0.23.1680.1027@0.23.1680.1027" timestamp="1586009170170" />
-    <state width="1570" height="244" key="GridCell.Tab.2.center" timestamp="1586009170169">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state width="1570" height="244" key="GridCell.Tab.2.center/0.23.1680.1027@0.23.1680.1027" timestamp="1586009170169" />
-    <state width="1570" height="244" key="GridCell.Tab.2.left" timestamp="1586009170168">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state width="1570" height="244" key="GridCell.Tab.2.left/0.23.1680.1027@0.23.1680.1027" timestamp="1586009170168" />
-    <state width="1570" height="244" key="GridCell.Tab.2.right" timestamp="1586009170169">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state width="1570" height="244" key="GridCell.Tab.2.right/0.23.1680.1027@0.23.1680.1027" timestamp="1586009170169" />
-    <state x="331" y="175" key="SettingsEditor" timestamp="1586011703519">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state x="331" y="175" key="SettingsEditor/0.23.1680.1027@0.23.1680.1027" timestamp="1586011703519" />
-    <state x="422" y="278" key="Vcs.Push.Dialog.v2" timestamp="1586011115777">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state x="422" y="278" key="Vcs.Push.Dialog.v2/0.23.1680.1027@0.23.1680.1027" timestamp="1586011115777" />
-    <state x="485" y="300" width="673" height="472" key="find.popup" timestamp="1586009630875">
-      <screen x="0" y="23" width="1680" height="1027" />
-    </state>
-    <state x="485" y="300" width="673" height="472" key="find.popup/0.23.1680.1027@0.23.1680.1027" timestamp="1586009630875" />
+    <state x="541" y="291" width="598" height="490" key="find.popup/0.23.1680.1027@0.23.1680.1027" timestamp="1609069770359" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/yan/dubbo/admin/controllers/ManageController.java</url>
-          <line>86</line>
-          <option name="timeStamp" value="6" />
+          <url>file://$PROJECT_DIR$/src/main/java/com/yan/dubbo/admin/manage/RegistryManager.java</url>
+          <line>41</line>
+          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -3,11 +3,6 @@ package com.yan.dubbo.admin.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * date:2020-04-04
- * Author:Y'an
- */
-
 public class RegistryAdminConfig implements Serializable {
     private static final long serialVersionUID = -3423538415586029526L;
 

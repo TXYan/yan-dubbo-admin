@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * date:2020-04-04
- * Author:Y'an
  * http://dubbo.apache.org/zh-cn/docs/user/demos/config-rule-deprecated.html
  */
 public class DubboOverride extends DubboInfo {
@@ -17,12 +15,15 @@ public class DubboOverride extends DubboInfo {
     private String application;
     private boolean dynamic;//数据是否持久化
     private boolean enabled;//代表该条Override是否生效
+    private boolean remoteUnregister;//因zk通知慢，最后调整如果是删除配置，那么可能导致删除不了，所以最后删除配置内存保留但标识true
 
     //Constants.DISABLED_KEY,Constants.WEIGHT_KEY,Constants.GROUP_KEY
     private Map<String, String> attributeMap = new ConcurrentHashMap<>();
 
     public DubboOverride() {
         setCategory(Constants.CONFIGURATORS_CATEGORY);
+        //解决notify 过慢导致老值覆盖新值问题
+        setAttribute(Constants.TIMESTAMP_KEY, String.valueOf(System.currentTimeMillis()));
     }
 
     @JsonIgnore
@@ -38,6 +39,14 @@ public class DubboOverride extends DubboInfo {
         String weight = getUrl().getParameter(Constants.WEIGHT_KEY, "");
         if (!"".equals(weight)) {
             attributeMap.put(Constants.WEIGHT_KEY, weight);
+        }
+        String timeout = getUrl().getParameter(Constants.TIMEOUT_KEY, "");
+        if (!"".equals(timeout)) {
+            attributeMap.put(Constants.TIMEOUT_KEY, timeout);
+        }
+        String timestamp = getUrl().getParameter(Constants.TIMESTAMP_KEY, "");
+        if (!"".equals(timestamp)) {
+            attributeMap.put(Constants.TIMESTAMP_KEY, timestamp);
         }
     }
 
@@ -77,6 +86,14 @@ public class DubboOverride extends DubboInfo {
         this.enabled = enabled;
     }
 
+    public boolean isRemoteUnregister() {
+        return remoteUnregister;
+    }
+
+    public void setRemoteUnregister(boolean remoteUnregister) {
+        this.remoteUnregister = remoteUnregister;
+    }
+
     public Map<String, String> getAttributeMap() {
         return attributeMap;
     }
@@ -87,6 +104,7 @@ public class DubboOverride extends DubboInfo {
                 "application=" + application +
                 ", dynamic=" + dynamic +
                 ", enabled=" + enabled +
+                ", remoteUnregister=" + remoteUnregister +
                 ", attributeMap=" + attributeMap +
                 "} " + super.toString();
     }

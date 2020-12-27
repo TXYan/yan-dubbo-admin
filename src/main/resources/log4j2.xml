@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 设置log4j2的自身log级别为warn -->
+<!-- OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<configuration status="WARN" monitorInterval="30">
+
+    <properties>
+        <!-- 应用名称 -->
+        <property name="APP_NAME" value="yan-dubbo-admin"/>
+
+        <!-- 日志文件的保存路径,首先查找系统属性-Dlog.dir,如果存在就使用其；否则，在当前目录下创建名为logs目录做日志存放的目录 -->
+        <property name="LOG_HOME" value="${sys:log.dir:-../logs}/"/>
+
+        <!-- 日志格式化输出：%d表示日期，%t表示线程名，%-5level：级别从左显示5个字符宽度 %m:日志消息，%n:换行符-->
+        <property name="ENCODER_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %X{traceId} %-5level -[%t]%m%n"/>
+    </properties>
+
+    <appenders>
+        <console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %X{traceId} %-5level -[%t]%m%n"/>
+        </console>
+
+        <RollingRandomAccessFile name="INFO_FILE" fileName="${LOG_HOME}/boss_info.log"
+                                 filePattern="${LOG_HOME}/boss_info.log.%d{yyyy-MM-dd}">
+            <Filters>
+                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+                <ThresholdFilter level="WARN"  onMatch="DENY" onMismatch="NEUTRAL"/>
+            </Filters>
+            <PatternLayout pattern="${ENCODER_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="WARN_FILE" fileName="${LOG_HOME}/boss_warn.log"
+                                 filePattern="${LOG_HOME}/boss_warn.log.%d{yyyy-MM-dd}">
+            <Filters>
+                <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+                <ThresholdFilter level="ERROR"  onMatch="DENY" onMismatch="NEUTRAL"/>
+
+            </Filters>
+            <PatternLayout pattern="${ENCODER_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="ERROR_FILE" fileName="${LOG_HOME}/boss_error.log"
+                                 filePattern="${LOG_HOME}/boss_error.log.%d{yyyy-MM-dd}">
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="${ENCODER_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+        </RollingRandomAccessFile>
+    </appenders>
+
+    <loggers>
+
+        <!--过滤掉spring的一些无用的DEBUG信息-->
+        <logger name="org.springframework" level="INFO" additivity="false">
+            <appender-ref ref="INFO_FILE"/>
+        </logger>
+
+        <logger name="org.apache.logging.log4j" level="ERROR" additivity="false">
+            <appender-ref ref="ERROR_FILE"/>
+        </logger>
+
+        <logger name="com.yan" level="INFO" additivity="false">
+            <appender-ref ref="INFO_FILE"/>
+            <appender-ref ref="WARN_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+        </logger>
+
+        <logger name="com.alibaba.dubbo.registry.support" level="ERROR" additivity="false">
+            <appender-ref ref="ERROR_FILE"/>
+        </logger>
+
+        <logger name="com.alibaba" level="INFO" additivity="false">
+            <appender-ref ref="INFO_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+        </logger>
+
+        <root level="INFO">
+            <appender-ref ref="STDOUT"/>
+        </root>
+
+    </loggers>
+
+
+</configuration>

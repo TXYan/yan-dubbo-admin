@@ -1,2 +1,16 @@
 server:
-  port: 8083
+  port: 80
+management:
+  health:
+    defaults:
+      enabled: true
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+spring:
+  thymeleaf:
+    cache: false
+#    prefix: classpath:/templates/ 默认后面有/ 所以使用时不需要加/
+logging:
+  config: classpath:log4j2.xml

@@ -1,0 +1,21 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2">
+	<id>server</id>
+	<!-- id 标识符，添加到生成文件名称的后缀符。如果指定 id 的话，目标文件则是 ${artifactId}-${id}.tar.gz -->
+    <formats>
+        <format>zip</format>
+        <format>dir</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <files>
+        <file>
+            <source>target/yan-dubbo-admin.jar</source>
+            <outputDirectory>.</outputDirectory>
+        </file>
+        <file>
+            <source>src/main/bin/run</source>
+            <outputDirectory>.</outputDirectory>
+            <fileMode>0755</fileMode> <!-- 0775的权限 随意权限-->
+        </file>
+    </files>
+</assembly>

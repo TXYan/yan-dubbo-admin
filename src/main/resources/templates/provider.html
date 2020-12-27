@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<!-- 是Thyme leaf 命名空间，通过引入该命名空间就可以在HTML 文件中使用Thymeleaf 标签语言，用关键字“ th ” 来标注。 -->
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.2/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"/>
+    <style>
+        .el-header {
+            background-color: #B3C0D1;
+            color: #333;
+            line-height: 60px;
+        }
+
+        .el-aside {
+            color: #333;
+        }
+        .form-inline {
+            margin-top: 20px;
+            margin-left: 30px;
+        }
+        .weight-input {
+            width: 160px;
+        }
+        .weight-button {
+            color: #FFF !important;
+            background-color: #67C23A !important;
+            border-radius: 2px;
+            border: 1px solid #DCDFE6;
+        }
+    </style>
+    <title>Dubbo提供者</title>
+</head>
+<body>
+    <div id="app" class="el-container">
+        <aside class="el-aside" style="width: 200px">
+            <el-menu :default-openeds="['1']">
+                <el-submenu index="1">
+                    <template slot="title"><i class="el-icon-menu"></i>服务管理</template>
+                    <el-menu-item index="1-1"><el-link href="/manage/provider">提供者列表</el-link></el-menu-item>
+                </el-submenu>
+            </el-menu>
+        </aside>
+        <el-container>
+            <el-header >
+                <el-row type="flex" class="space-between">
+                    <el-col><div>yan-dubbo-admin</div></el-col>
+                    <el-col :span="2">
+                        <div>
+                            <span style="text-align: right; font-size: 12px">管理员</span>
+                        </div>
+                    </el-col>
+                </el-row>
+
+            </el-header>
+
+            <el-form :inline="true" :model="params" class="form-inline">
+                <el-form-item label="名称">
+                    <el-input v-model="params.name" name="name" placeholder="名称"></el-input>
+                </el-form-item>
+                <el-form-item label="IP">
+                    <el-input v-model="params.ip" name="ip" placeholder="IP"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="queryInfo('','')">查询</el-button>
+                </el-form-item>
+            </el-form>
+
+            <el-main>
+                <el-table v-if="listType == 1" :data="dubboInfo.providerNames">
+                    <el-table-column prop="name" label="名称">
+                        <template slot-scope="scope" v-if="listType == 1">
+                            <el-link type="success" @click="queryInfo(scope.row.name,'')" >{{scope.row.name}}</el-link>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-table v-else-if="listType == 2" :data="dubboInfo.providerIps">
+                    <el-table-column prop="ip" label="IP" width="140">
+                        <template slot-scope="scope" v-if="listType == 2">
+                            <el-link type="success" @click="queryInfo(params.name,scope.row.ip)" >{{scope.row.ip}}</el-link>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="port" label="端口" width="120"></el-table-column>
+                    <el-table-column prop="totalApiCount" label="总接口数"></el-table-column>
+                    <el-table-column prop="effectApiCount" label="启用接口数"></el-table-column>
+                    <el-table-column prop="uneffectApiCount" label="未启用接口数"></el-table-column>
+                    <el-table-column prop="weightInfoStr" label="权重说明"></el-table-column>
+                    <el-table-column label="操作" width="260">
+                        <template slot-scope="scope2" v-if="listType == 2">
+                            <el-input size="small" placeholder="0-100" v-model="params.weight" maxlength="3" class="weight-input">
+                                <el-button slot="append" size="small" class="weight-button" @click="weightConfirm(scope2.row, false)">启用权重</el-button>
+                            </el-input>
+                            <el-button size="small" type="danger" @click="weightConfirm(scope2.row, true)">禁用</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-table v-else-if="listType == 3" :data="dubboInfo.providerApis">
+                    <el-table-column prop="port" label="端口" width="80"></el-table-column>
+                    <el-table-column prop="apiName" label="接口名" width="360"></el-table-column>
+                    <el-table-column prop="effect" label="启用状态">
+                        <template slot-scope="scope3" v-if="listType == 3">
+                            <span v-if="scope3.row.effect" style="color: green">
+                                已启用
+                            </span>
+                            <span v-else style="color: red">
+                                已禁用
+                            </span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="weight" label="权重"></el-table-column>
+                    <el-table-column prop="filters" label="过滤器"></el-table-column>
+                    <el-table-column prop="version" label="版本"></el-table-column>
+                    <el-table-column prop="threadCount" label="线程数"></el-table-column>
+                    <el-table-column label="操作" width="260">
+                        <template slot-scope="scope4">
+                            <el-button v-if="!scope4.row.effect"  size="small" class="weight-button" @click="weightConfirm(scope4.row, false)">启用</el-button>
+                            <el-button v-else size="small" type="danger" @click="weightConfirm(scope4.row, true)">禁用</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-main>
+        </el-container>
+    </div>
+</body>
+<script>
+    var Main = {
+        data() {
+            return {
+                // tableData: Array(20).fill(item),
+                listType:0,//1:提供者列表，2:ip列表，3:api列表
+                params: {
+                    name:'[[${name}]]',
+                    ip:'[[${ip}]]',
+                    weight:0,
+                },
+                dubboInfo: {
+
+                    providerNames: [
+                        // {name: "application1"},
+                        // {name: "application2"},
+                        // {name: "application3"},
+                        // {name: "application4"}
+                    ],
+                    providerIps: [
+                        // {ip:"127.0.0.1", port:"18010", totalApiCount: 99, effectApiCount: 80, uneffectApiCount: 19, weightInfo: "权重:100" },
+                        // {ip:"127.0.0.1", port:"18010", totalApiCount: 99, effectApiCount: 80, uneffectApiCount: 19, weightInfo: "权重:100" },
+                        // {ip:"127.0.0.1", port:"18010", totalApiCount: 99, effectApiCount: 80, uneffectApiCount: 19, weightInfo: "权重:100" },
+                        // {ip:"127.0.0.1", port:"18010", totalApiCount: 99, effectApiCount: 80, uneffectApiCount: 19, weightInfo: "权重:100" }
+                    ],
+                    providerApis: [
+                        // {port:"18010", apiName: "com.yan.test.api.TestApi", effect: true, weight: 19, filters: "", version:"1.0.1", threadCount:600 },
+                    ]
+                }
+
+            }
+        },
+        methods: {
+            onSubmit() {
+                console.log(this.form);
+            },
+            queryInfo(name, ip) {
+                let that = this;
+
+                if (name) {
+                    that.params.name = name;
+                }
+                if (ip) {
+                    that.params.ip = ip;
+                }
+                if (!that.params.name && !that.params.ip) {
+                    that.listType = 1;
+                    axios.get("/manage/provider/name/list.json")
+                    .then(function (res) {
+                        that.dubboInfo.providerNames = new Array();
+                        if (res.data.data) {
+                            for (idx in res.data.data) {
+                                that.dubboInfo.providerNames.push({name:res.data.data[idx]});
+                            }
+                        }
+                    }).catch(function (err) {
+                        alert(err);
+                    })
+                } else if (that.params.name && !that.params.ip) {
+                    that.listType = 2;
+                    axios.get("/manage/provider/ip/list.json?name=" + that.params.name)
+                        .then(function (res) {
+                            that.dubboInfo.providerIps = res.data.data;
+                        }).catch(function (err) {
+                        alert(err);
+                    })
+                } else {
+                    that.listType = 3;
+                    axios.get("/manage/provider/api/list.json?name=" + that.params.name + "&ip=" + that.params.ip)
+                        .then(function (res) {
+                            if (res.data.success) {
+                                that.dubboInfo.providerApis = res.data.data;
+                            } else {
+                                alert(res.data.message);
+                            }
+                        }).catch(function (err) {
+                        alert(err);
+                    })
+                }
+            },
+            weightConfirm(info, disabled) {
+                let that = this;
+                let confirmMsg = "";
+                let disabledName = disabled ? '禁用' : '启用';
+                if (info.totalApiCount) {
+                    if (that.params.weight < 0) {
+                        this.$message.error('请填写权重');
+                        return;
+                    }
+                    confirmMsg = "ip:" + info.ip + (disabled ? '' : ',weight:' + that.params.weight + '\n确定要' + disabledName + '吗？');
+                } else if (info.apiName) {
+                    confirmMsg = 'apiName:' + info.apiName + '\n确定要' + disabledName + '吗?';
+                }
+                this.$confirm(confirmMsg, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    if (info.totalApiCount) {
+                        axios.get("/manage/override/ip/disabled.json?name=" + info.name + "&ip=" + info.ip + "&port=" + info.port + "&disabled=" + disabled + "&weight=" + that.params.weight)
+                        .then(function (res) {
+                            if (res.data.success) {
+                                that.$message({
+                                    type: 'success',
+                                    message: disabledName + info.ip + "成功！"
+                                });
+                                that.queryInfo();
+                            } else {
+                                that.$message({
+                                    type: 'info',
+                                    message: disabledName + info.ip + "失败！"
+                                });
+                            }
+                        })
+                    } else if (info.apiName) {
+                        axios.get("/manage/override/ip/disabled.json?name=" + info.name + "&ip=" + info.ip + "&port=" + info.port + "&disabled=" + disabled + "&weight=" + (disabled ? 0 : 100) + "&interfaceName=" + info.apiName)
+                        // axios.get("/manage/override/set?name=" + info.name + "&ip=" + info.ip + "&port=" + info.port + "&version=" + info.version + "&interfaceName=" + info.apiName + "&attr=disabled&val=true&enabled=" + disabled)
+                        .then(function (res) {
+                            if (res.data.success) {
+                                info.effect = !disabled;
+                                info.weight = disabled ? 0 : 100;
+                                that.$message({
+                                    type: 'success',
+                                    message: disabledName + info.apiName + "成功！"
+                                });
+                            } else {
+                                that.$message({
+                                    type: 'info',
+                                    message: disabledName + info.apiName + "失败！"
+                                });
+                            }
+                        });
+                    }
+
+                })
+                .catch(function () {
+                });
+            }
+        }
+    };
+    var Ctor = Vue.extend(Main)
+    new Ctor().$mount('#app')
+</script>
+</html>

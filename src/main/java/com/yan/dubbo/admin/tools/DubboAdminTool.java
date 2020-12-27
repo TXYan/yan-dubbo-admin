@@ -8,33 +8,13 @@ import com.alibaba.dubbo.config.RegistryConfig;
 import com.alibaba.dubbo.registry.RegistryService;
 import com.yan.dubbo.admin.model.*;
 import org.apache.commons.lang3.StringUtils;
-import sun.misc.BASE64Encoder;
-
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * date:2020-04-04
- * Author:Y'an
- */
-
 public class DubboAdminTool {
 
-    private static ApplicationConfig applicationConfig = new ApplicationConfig("dubbo-admin");
-
-
-    public static void main(String[] args) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        MessageDigest digest = MessageDigest.getInstance("MD5");
-        BASE64Encoder base=new BASE64Encoder();
-        String digitFingerprint=base.encode(digest.digest());
-        System.out.println(digitFingerprint);
-        List<String> keyList = Stream.of("weight", "disabled").sorted().collect(Collectors.toList());
-        System.out.println(keyList);
-    }
+    private static ApplicationConfig APPLICATIONCONFIG = new ApplicationConfig("dubbo-admin");
 
     public static String generateUniqId(String... keys) {
         if (keys == null) {
@@ -43,6 +23,13 @@ public class DubboAdminTool {
         List<String> keyList = Stream.of(keys).sorted().collect(Collectors.toList());
         //暂时不对字符串做摘要，明文排查问题方便
         return StringUtils.join(keyList, ":");
+    }
+
+    public static String generateInterfaceUniqId(DubboInfo dubboInfo) {
+        if (dubboInfo == null) {
+            return "";
+        }
+        return generateUniqId(dubboInfo.getIp(), String.valueOf(dubboInfo.getPort()), dubboInfo.getInterfaceName(), dubboInfo.getVersion());
     }
 
     public static String generateUniqId(DubboInfo dubboInfo) {
@@ -83,9 +70,10 @@ public class DubboAdminTool {
         registryConfig.setGroup(config.getGroup());
         registryConfig.setProtocol("zookeeper");
         registryConfig.setCheck(false);
+        registryConfig.setFile(System.getProperty("user.home") + "/.dubbo/dubbo-registry-" + config.getName() + ".cache");
 
         ReferenceConfig<RegistryService> reference = new ReferenceConfig<>();
-        reference.setApplication(applicationConfig);
+        reference.setApplication(APPLICATIONCONFIG);
         reference.setRegistry(registryConfig);
         reference.setInterface(RegistryService.class);
         reference.setCheck(false);
@@ -116,6 +104,7 @@ public class DubboAdminTool {
         dubboProvider.setEnabled(url.getParameter(Constants.ENABLED_KEY, true));
 
         dubboProvider.setUrl(url);
+        generateUniqId(dubboProvider);
         return dubboProvider;
     }
 
@@ -135,6 +124,7 @@ public class DubboAdminTool {
         dubboConsumer.setPid(url.getParameter(Constants.PID_KEY, 0L));
         dubboConsumer.setFilter(url.getParameter(Constants.REFERENCE_FILTER_KEY, url.getParameter("default.reference.filter", "")));
         dubboConsumer.setUrl(url);
+        generateUniqId(dubboConsumer);
         return dubboConsumer;
     }
 
@@ -153,6 +143,7 @@ public class DubboAdminTool {
         dubboOverride.setApplication(url.getParameter(Constants.APPLICATION_KEY, ""));
         dubboOverride.setUrl(url);
         dubboOverride.initAttribute();
+        generateUniqId(dubboOverride);
         return dubboOverride;
     }
 
@@ -174,6 +165,7 @@ public class DubboAdminTool {
         dubboRoute.setRuntime(url.getParameter(Constants.RUNTIME_KEY, false));
         dubboRoute.setRule(url.getParameter(Constants.RULE_KEY, ""));
         dubboRoute.setUrl(url);
+        generateUniqId(dubboRoute);
         return dubboRoute;
     }
 
@@ -234,6 +226,10 @@ public class DubboAdminTool {
 
     public static <E> Set<E> newSet(int expectSize) {
         return new HashSet<>(capacity(expectSize));
+    }
+
+    public static <K,V> Map<K,V> newMap(int expectSize) {
+        return new HashMap<>(capacity(expectSize));
     }
 
     private static int capacity(int expectedSize) {
