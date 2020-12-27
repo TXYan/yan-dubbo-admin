@@ -3,8 +3,6 @@ package com.yan.dubbo.admin.model;
 import com.alibaba.dubbo.common.Constants;
 
 /**
- * date:2020-04-04
- * Author:Y'an
  * http://dubbo.apache.org/zh-cn/docs/user/references/xml/dubbo-provider.html
  */
 public class DubboProvider extends DubboInfo {
@@ -22,6 +20,8 @@ public class DubboProvider extends DubboInfo {
     private long timestamp;
     private boolean dynamic;
     private boolean enabled = true;
+
+    private int weight = -1;//权重
 
     public DubboProvider() {
         setCategory(Constants.PROVIDERS_CATEGORY);
@@ -115,6 +115,14 @@ public class DubboProvider extends DubboInfo {
         this.enabled = enabled;
     }
 
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
     @Override
     public String toString() {
         return "DubboProvider{" +
@@ -129,6 +137,7 @@ public class DubboProvider extends DubboInfo {
                 ", timestamp=" + timestamp +
                 ", dynamic=" + dynamic +
                 ", enabled=" + enabled +
+                ", weight=" + weight +
                 "} " + super.toString();
     }
 }

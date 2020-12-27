@@ -1,0 +1,46 @@
+#!/bin/bash
+
+export LANG="zh_CN.UTF-8"
+ulimit -u 10240
+ulimit -n 65535
+
+APP_NAME=yan-dubbo-admin
+SERVER_HOME=/data/$APP_NAME
+LOG_PATH=/data/logs/$APP_NAME
+TMP_DIR=/tmp
+hostname=`hostname`
+
+ip=`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"`
+if [[ $ip == 192.168* ]]; then
+ envStr=${hostname:3:3}
+ if [[ ${hostname:3:2} == "rd" ]]; then
+  SERVER_OPTS="-Ddisconf.env=rd -server -Xms2G -Xmx2G -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=512M -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=18022,server=y,suspend=n "
+ elif [[ $envStr == "qa1" ]]; then
+  SERVER_OPTS="-Ddisconf.env=qa -server -Xms2G -Xmx2G -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=512M -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=18022,server=y,suspend=n "
+ else
+  SERVER_OPTS="-Ddisconf.env=$envStr -server -Xms2G -Xmx2G -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=512M -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=18022,server=y,suspend=n "
+ fi
+else
+  SERVER_OPTS="-Ddisconf.env=prod -server -Xms6G -Xmx6G -XX:MetaspaceSize=256M -XX:MaxMetaspaceSize=512M -XX:+UseG1GC -XX:MaxGCPauseMillis=180 -XX:InitiatingHeapOccupancyPercent=45 -Dfile.encoding=UTF-8 -XX:-OmitStackTraceInFastThrow"
+  SERVER_OPTS="$SERVER_OPTS -XX:+UseCompressedOops -XX:CICompilerCount=6 -XX:+AlwaysPreTouch"
+  SERVER_OPTS="$SERVER_OPTS -XX:+PrintTenuringDistribution -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCApplicationStoppedTime -XX:+PrintGCApplicationConcurrentTime -Xloggc:$LOG_PATH/gc.log"
+  SERVER_OPTS="$SERVER_OPTS -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$LOG_PATH"
+fi
+
+SERVER_OPTS="$SERVER_OPTS -Dtrace-name=$APP_NAME "
+
+cmd="/data/j2sdk/bin/java
+$APP_NAME_OPTS
+$SERVER_OPTS
+-Djava.io.tmpdir=$TMP_DIR
+-Dlog.dir=$LOG_PATH
+-jar yan-dubbo-admin.jar"
+
+myid=`id -u`
+
+if [ $myid -eq 0 ]; then
+    # daemontools 会以root身份运行run脚本。用setuidgid切换到work账户。
+    exec setuidgid work $cmd >>$LOG_PATH/stdout.log 2>>$LOG_PATH/stderr.log
+else
+    exec $cmd >>$LOG_PATH/stdout.log 2>>$LOG_PATH/stderr.log
+fi

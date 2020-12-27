@@ -1,22 +1,26 @@
 package com.yan.dubbo.admin.model;
 
 import java.io.Serializable;
-
-/**
- * date:2020-04-04
- * Author:Y'an
- */
+import java.util.List;
+import java.util.Set;
 
 public class DubboStatisticInfo implements Serializable {
     private static final long serialVersionUID = 6056446649517777168L;
 
     private int providerCount;
     private int providerInterfaceCount;
+    private Set<String> providerIpSet;
+    private Set<String> providerInterfaceSet;
+
     private int consumerCount;
     private int consumerInterfaceCount;
+
     private int overrideCount;
     private int overrideInterfaceCount;
     private int routeCount;
+
+    //provider; ip:port,providerStatistic
+    private List<DubboProviderStatisticInfo> providerStatisticInfoList;
 
     public int getProviderCount() {
         return providerCount;
@@ -32,6 +36,22 @@ public class DubboStatisticInfo implements Serializable {
 
     public void setProviderInterfaceCount(int providerInterfaceCount) {
         this.providerInterfaceCount = providerInterfaceCount;
+    }
+
+    public Set<String> getProviderIpSet() {
+        return providerIpSet;
+    }
+
+    public void setProviderIpSet(Set<String> providerIpSet) {
+        this.providerIpSet = providerIpSet;
+    }
+
+    public Set<String> getProviderInterfaceSet() {
+        return providerInterfaceSet;
+    }
+
+    public void setProviderInterfaceSet(Set<String> providerInterfaceSet) {
+        this.providerInterfaceSet = providerInterfaceSet;
     }
 
     public int getConsumerCount() {

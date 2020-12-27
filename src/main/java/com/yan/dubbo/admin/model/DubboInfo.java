@@ -6,12 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 
-/**
- * date:2020-04-04
- * Author:Y'an
- */
-
-public class DubboInfo implements Serializable {
+public class DubboInfo implements Serializable, Cloneable {
     private static final long serialVersionUID = -4448383927730115888L;
 
     private String category;
@@ -92,6 +87,16 @@ public class DubboInfo implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
