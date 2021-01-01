@@ -10,6 +10,7 @@ import com.baidu.disconf.client.common.update.IDisconfUpdate;
 import com.yan.dubbo.admin.model.RegistryAdminConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -21,9 +22,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@DisconfFile(filename = "admin.properties")
-@DisconfUpdateService(classes = {RegistryManager.class})
-public class RegistryManager implements IDisconfUpdate {
+//@DisconfFile(filename = "admin.properties")
+//@DisconfUpdateService(classes = {RegistryManager.class})
+@PropertySource("classpath:config/dubbo-admin.properties")
+public class RegistryManager /*implements IDisconfUpdate*/ {
 
     private Pattern EMPTY_PATTERN = Pattern.compile("\\s+|\\r|\\n");
     private static final String DEFAULT_ADDRNAME = "default";
@@ -47,7 +49,7 @@ public class RegistryManager implements IDisconfUpdate {
         return registryConfigs;
     }
 
-    @Override
+//    @Override
     @PostConstruct
     public void reload() {
         initTransform();
