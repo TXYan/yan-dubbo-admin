@@ -12,9 +12,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DubboAdminTool {
+public final class DubboAdminTool {
 
     private static ApplicationConfig APPLICATIONCONFIG = new ApplicationConfig("dubbo-admin");
+
+    private DubboAdminTool() {
+    }
 
     public static String generateUniqId(String... keys) {
         if (keys == null) {
@@ -189,7 +192,7 @@ public class DubboAdminTool {
     public static URL convertURL(DubboOverride dubboOverride) {
         StringBuilder sb = new StringBuilder();
         sb.append(Constants.OVERRIDE_PROTOCOL).append("://");
-        if(! com.alibaba.dubbo.common.utils.StringUtils.isBlank(dubboOverride.getIp()) && ! Constants.ANY_VALUE.equals(dubboOverride.getIp())) {
+        if (!com.alibaba.dubbo.common.utils.StringUtils.isBlank(dubboOverride.getIp()) && ! Constants.ANY_VALUE.equals(dubboOverride.getIp())) {
             sb.append(dubboOverride.getIp());
         } else {
             sb.append(Constants.ANYHOST_VALUE);
@@ -202,7 +205,7 @@ public class DubboAdminTool {
         param.put(Constants.CATEGORY_KEY, Constants.CONFIGURATORS_CATEGORY);
         param.put(Constants.ENABLED_KEY, String.valueOf(dubboOverride.isEnabled()));
         param.put(Constants.DYNAMIC_KEY, String.valueOf(dubboOverride.isDynamic()));
-        if(!StringUtils.isBlank(dubboOverride.getApplication()) && !Constants.ANY_VALUE.equals(dubboOverride.getApplication())) {
+        if (!StringUtils.isBlank(dubboOverride.getApplication()) && !Constants.ANY_VALUE.equals(dubboOverride.getApplication())) {
             param.put(Constants.APPLICATION_KEY, dubboOverride.getApplication());
         }
         if (StringUtils.isNotBlank(dubboOverride.getVersion())) {
@@ -228,7 +231,7 @@ public class DubboAdminTool {
         return new HashSet<>(capacity(expectSize));
     }
 
-    public static <K,V> Map<K,V> newMap(int expectSize) {
+    public static <K, V> Map<K, V> newMap(int expectSize) {
         return new HashMap<>(capacity(expectSize));
     }
 
@@ -236,7 +239,7 @@ public class DubboAdminTool {
         if (expectedSize < 3) {
             return expectedSize + 1;
         } else {
-            return expectedSize < 1073741824 ? (int)((float)expectedSize / 0.75F + 1.0F) : 2147483647;
+            return expectedSize < 1073741824 ? (int) ((float) expectedSize / 0.75F + 1.0F) : 2147483647;
         }
     }
 

@@ -122,10 +122,10 @@ public class ManageController {
                     if (weight > -1) {
                         provider.setWeight(weight);
                     }
-
                 });
             }
-        });
+        }
+        );
     }
 
 
@@ -174,7 +174,8 @@ public class ManageController {
     }
 
     @RequestMapping("/override/set")
-    public Response addOverride(String name, String ip, int port, String interfaceName, String version, String attr, String val, @RequestParam(required = false, defaultValue = "true") boolean enabled) {
+    public Response addOverride(String name, String ip, int port, String interfaceName, String version, String attr, String val,
+                                @RequestParam(required = false, defaultValue = "true") boolean enabled) {
         RegistryOperator operator = registryManager.getOperator(name);
         if (operator == null) {
             return Response.fail("name:" + name + " can not find");
@@ -193,7 +194,8 @@ public class ManageController {
     }
 
     @RequestMapping("/override/ip/disabled.json")
-    public Response disabledNew(String name, String ip, int port, @RequestParam(required = false, defaultValue = "true") boolean disabled, @RequestParam(required = false, defaultValue = "-1") int weight,
+    public Response disabledNew(String name, String ip, int port, @RequestParam(required = false, defaultValue = "true") boolean disabled,
+                                @RequestParam(required = false, defaultValue = "-1") int weight,
                                 @RequestParam(required = false) String interfaceName) {
         if (weight > 200) {
             return Response.fail("weight can not large than 200");

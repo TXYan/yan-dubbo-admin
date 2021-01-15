@@ -21,7 +21,7 @@ public class DubboProvider extends DubboInfo {
     private boolean dynamic;
     private boolean enabled = true;
 
-    private int weight = -1;//权重
+    private int weight = -1; //权重
 
     public DubboProvider() {
         setCategory(Constants.PROVIDERS_CATEGORY);

@@ -31,9 +31,9 @@ public class RegistryManager /*implements IDisconfUpdate*/ {
     private static final String DEFAULT_ADDRNAME = "default";
 
     @Value("${zkAddrs}")
-    private volatile String zkAddrs;// = "{\"rd\":\"192.168.2.180:2181,192.168.2.181:2181\"}";
+    private volatile String zkAddrs; // = "{\"rd\":\"192.168.2.180:2181,192.168.2.181:2181\"}";
     @Value("${registryConfigs}")
-    private volatile String registryConfigs;// = "[{\"name\":\"zpJob\",\"addrName\":\"rd\",\"group\":\"zp_dubbo/job\"}]";
+    private volatile String registryConfigs; // = "[{\"name\":\"zpJob\",\"addrName\":\"rd\",\"group\":\"zp_dubbo/job\"}]";
 
     private volatile Map<String, String> zkAddrMap;
     private volatile List<RegistryAdminConfig> registryConfigList;

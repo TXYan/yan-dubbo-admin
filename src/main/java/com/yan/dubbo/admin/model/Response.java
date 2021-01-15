@@ -3,7 +3,7 @@ package com.yan.dubbo.admin.model;
 import java.io.Serializable;
 
 
-public class Response<T> implements Serializable {
+public final class Response<T> implements Serializable {
 
     private static final long serialVersionUID = 1645399341200800226L;
 

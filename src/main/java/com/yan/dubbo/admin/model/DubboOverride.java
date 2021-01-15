@@ -13,9 +13,9 @@ public class DubboOverride extends DubboInfo {
     private static final long serialVersionUID = -5324578474302788031L;
 
     private String application;
-    private boolean dynamic;//数据是否持久化
-    private boolean enabled;//代表该条Override是否生效
-    private boolean remoteUnregister;//因zk通知慢，最后调整如果是删除配置，那么可能导致删除不了，所以最后删除配置内存保留但标识true
+    private boolean dynamic; //数据是否持久化
+    private boolean enabled; //代表该条Override是否生效
+    private boolean remoteUnregister; //因zk通知慢，最后调整如果是删除配置，那么可能导致删除不了，所以最后删除配置内存保留但标识true
 
     //Constants.DISABLED_KEY,Constants.WEIGHT_KEY,Constants.GROUP_KEY
     private Map<String, String> attributeMap = new ConcurrentHashMap<>();
@@ -58,8 +58,6 @@ public class DubboOverride extends DubboInfo {
 
     public void setAttribute(String attr, String val) {
         attributeMap.put(attr, val);
-        if (getUrl() != null) {
-        }
     }
 
     public String getApplication() {

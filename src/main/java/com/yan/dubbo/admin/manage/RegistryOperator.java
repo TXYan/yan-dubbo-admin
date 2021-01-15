@@ -133,7 +133,8 @@ public class RegistryOperator implements NotifyListener {
                     overrideMap.put(id, oldOverride);
                     registryRef.get().register(newURL);
                     registryRef.get().unregister(oldURL);
-                    log.info("register and unregister uuid:{}, adminConfig:{}, interfaceName:{}, newURL:{}, oldURL:{}", uuid, adminConfig, dubboOverride.getInterfaceName(), newURL.toFullString(), oldURL.toFullString());
+                    log.info("register and unregister uuid:{}, adminConfig:{}, interfaceName:{}, newURL:{}, oldURL:{}",
+                            uuid, adminConfig, dubboOverride.getInterfaceName(), newURL.toFullString(), oldURL.toFullString());
                 }
             }
         }
@@ -300,7 +301,7 @@ public class RegistryOperator implements NotifyListener {
                 if (!removeEmptyDubboInfo(providerMap, dubboInfo)) {
                     notifyProviderMap.put(DubboAdminTool.generateUniqId(dubboInfo), (DubboProvider) dubboInfo);
                 }
-            } else if (dubboInfo instanceof DubboConsumer){
+            } else if (dubboInfo instanceof DubboConsumer) {
                 if (!removeEmptyDubboInfo(consumerMap, dubboInfo)) {
                     notifyConsumerMap.put(DubboAdminTool.generateUniqId(dubboInfo), (DubboConsumer) dubboInfo);
                 }
@@ -367,7 +368,8 @@ public class RegistryOperator implements NotifyListener {
                 DubboOverride notifyOverride = (DubboOverride) dubboInfo;
                 //如果通知的override的timestamp<已存在的override的timestamp那么返回true，不覆盖现有的
                 DubboOverride curOverride = (DubboOverride) infoMap.get(dubboInfo.getId());
-                log.info("notify removeEmptyDubboInfo notifyOverrideUrl:{} curOverrideUrl:{}", notifyOverride.getUrl().toFullString(), curOverride != null ? curOverride.getUrl().toFullString() : null);
+                log.info("notify removeEmptyDubboInfo notifyOverrideUrl:{} curOverrideUrl:{}",
+                        notifyOverride.getUrl().toFullString(), curOverride != null ? curOverride.getUrl().toFullString() : null);
                 if (curOverride != null) {
                     long curOverrideTimeStamp = NumberUtils.toLong(curOverride.getAttributeMap().get(Constants.TIMESTAMP_KEY), 0L);
                     long notifyOverrideTimeStamp = NumberUtils.toLong(notifyOverride.getAttributeMap().get(Constants.TIMESTAMP_KEY), 0L);
