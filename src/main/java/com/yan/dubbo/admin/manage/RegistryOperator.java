@@ -90,50 +90,27 @@ public class RegistryOperator implements NotifyListener {
         if (dubboOverride == null) {
             return;
         }
-        String uuid = UUID.randomUUID().toString();
         //根据设置查看是否已经存在相应设置
         String id = DubboAdminTool.generateUniqId(dubboOverride);
         DubboOverride oldOverride = overrideMap.get(id);
         synchronized (this) {
-            if (oldOverride == null) {
-                //新增 有效的
-                if (dubboOverride.isEnabled()) {
-                    URL url = DubboAdminTool.convertURL(dubboOverride);
-                    dubboOverride.setUrl(url);
-                    registryRef.get().register(url);
-                    overrideMap.put(id, dubboOverride);
-                    log.info("just register uuid:{}, adminConfig:{}, interfaceName:{}, url:{}", uuid, adminConfig, dubboOverride.getInterfaceName(), url.toFullString());
+            URL oldURL = oldOverride != null ? oldOverride.getUrl() : null;
+            boolean oldEnabled = oldOverride != null && oldOverride.isEnabled();
+            DubboOverride resultOverride = DubboAdminTool.mergeOverride(oldOverride, dubboOverride);
+            if (resultOverride.isEnabled() //结果是生效的那么需要更新规则
+                    || oldEnabled//老的是生效，新的是失效 需要移除老的配置
+            ) {
+                URL resultURL = DubboAdminTool.convertURL(resultOverride);
+                resultOverride.setUrl(resultURL);
+                if (!resultOverride.isEnabled()) {
+                    resultOverride.setRemoteUnregister(true);
                 }
-            } else {
-                //如果设置项一样 仅仅失效，那么需要移出
-                if (!dubboOverride.isEnabled() && oldOverride.isEnabled()) {
-                    if (dubboOverride.isRemoteUnregister()) {
-                        //将老的对象信息更新为新设置值，将配置远程移除，内存配置保留
-                        oldOverride.putAllAttr(dubboOverride.getAttributeMap());
-                        oldOverride.setEnabled(dubboOverride.isEnabled());
-                        oldOverride.setRemoteUnregister(dubboOverride.isRemoteUnregister());
-                        URL oldURL = oldOverride.getUrl();
-                        URL newURL = DubboAdminTool.convertURL(oldOverride);
-                        oldOverride.setUrl(newURL);
-                        overrideMap.put(id, oldOverride);
-                        registryRef.get().unregister(oldURL);
-                    } else {
-                        registryRef.get().unregister(oldOverride.getUrl());
-                        overrideMap.remove(id);
-                    }
-                    log.info("just unregister uuid:{}, adminConfig:{}, interfaceName:{}, url:{}", uuid, adminConfig, dubboOverride.getInterfaceName(), oldOverride.getUrl().toFullString());
-                } else {
-                    //将老的对象信息更新为新设置值
-                    oldOverride.putAllAttr(dubboOverride.getAttributeMap());
-                    oldOverride.setEnabled(dubboOverride.isEnabled());
-                    URL oldURL = oldOverride.getUrl();
-                    //先注册，再取消注册老的，避免中间空当影响
-                    URL newURL = DubboAdminTool.convertURL(oldOverride);
-                    oldOverride.setUrl(newURL);
-                    overrideMap.put(id, oldOverride);
-                    registryRef.get().register(newURL);
+                overrideMap.put(id, resultOverride);
+                if (oldURL != null) {
                     registryRef.get().unregister(oldURL);
-                    log.info("register and unregister uuid:{}, adminConfig:{}, interfaceName:{}, newURL:{}, oldURL:{}", uuid, adminConfig, dubboOverride.getInterfaceName(), newURL.toFullString(), oldURL.toFullString());
+                }
+                if (resultOverride.isEnabled()) {
+                    registryRef.get().register(resultURL);
                 }
             }
         }
@@ -300,7 +277,7 @@ public class RegistryOperator implements NotifyListener {
                 if (!removeEmptyDubboInfo(providerMap, dubboInfo)) {
                     notifyProviderMap.put(DubboAdminTool.generateUniqId(dubboInfo), (DubboProvider) dubboInfo);
                 }
-            } else if (dubboInfo instanceof DubboConsumer){
+            } else if (dubboInfo instanceof DubboConsumer) {
                 if (!removeEmptyDubboInfo(consumerMap, dubboInfo)) {
                     notifyConsumerMap.put(DubboAdminTool.generateUniqId(dubboInfo), (DubboConsumer) dubboInfo);
                 }
@@ -367,7 +344,8 @@ public class RegistryOperator implements NotifyListener {
                 DubboOverride notifyOverride = (DubboOverride) dubboInfo;
                 //如果通知的override的timestamp<已存在的override的timestamp那么返回true，不覆盖现有的
                 DubboOverride curOverride = (DubboOverride) infoMap.get(dubboInfo.getId());
-                log.info("notify removeEmptyDubboInfo notifyOverrideUrl:{} curOverrideUrl:{}", notifyOverride.getUrl().toFullString(), curOverride != null ? curOverride.getUrl().toFullString() : null);
+                log.info("notify removeEmptyDubboInfo notifyOverrideUrl:{} curOverrideUrl:{}",
+                        notifyOverride.getUrl().toFullString(), curOverride != null ? curOverride.getUrl().toFullString() : null);
                 if (curOverride != null) {
                     long curOverrideTimeStamp = NumberUtils.toLong(curOverride.getAttributeMap().get(Constants.TIMESTAMP_KEY), 0L);
                     long notifyOverrideTimeStamp = NumberUtils.toLong(notifyOverride.getAttributeMap().get(Constants.TIMESTAMP_KEY), 0L);

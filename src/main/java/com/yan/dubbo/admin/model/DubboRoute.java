@@ -9,9 +9,9 @@ public class DubboRoute extends DubboInfo {
     private static final long serialVersionUID = -1208664851911618719L;
 
     private String group;
-    private boolean dynamic;//表示该数据为持久数据，当注册方退出时，数据依然保存在注册中心，必填。
+    private boolean dynamic; //表示该数据为持久数据，当注册方退出时，数据依然保存在注册中心，必填。
     private String rule;
-    private boolean enabled = true;//是否生效
+    private boolean enabled = true; //是否生效
     private int priority = 1;
     private boolean force;
     private boolean runtime;

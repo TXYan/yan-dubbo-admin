@@ -12,15 +12,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DubboAdminTool {
+public final class DubboAdminTool {
 
     private static ApplicationConfig APPLICATIONCONFIG = new ApplicationConfig("dubbo-admin");
+
+    private DubboAdminTool() {
+    }
 
     public static String generateUniqId(String... keys) {
         if (keys == null) {
             return "";
         }
-        List<String> keyList = Stream.of(keys).sorted().collect(Collectors.toList());
+        List<String> keyList = Stream.of(keys)/*.sorted()*/.collect(Collectors.toList());
         //暂时不对字符串做摘要，明文排查问题方便
         return StringUtils.join(keyList, ":");
     }
@@ -37,26 +40,7 @@ public class DubboAdminTool {
             return "";
         }
 
-        String id = "";
-        if (dubboInfo instanceof DubboProvider || dubboInfo instanceof DubboConsumer) {
-            id = generateUniqId(dubboInfo.getIp(), String.valueOf(dubboInfo.getPort()), dubboInfo.getInterfaceName(), dubboInfo.getVersion());
-        } else if (dubboInfo instanceof DubboOverride) {
-            List<String> keyList = new ArrayList<>(16);
-            keyList.addAll(((DubboOverride) dubboInfo).getAttributeMap().keySet());
-            keyList.add(dubboInfo.getIp());
-            keyList.add(String.valueOf(dubboInfo.getPort()));
-            keyList.add(dubboInfo.getInterfaceName());
-            keyList.add(dubboInfo.getVersion());
-            id = generateUniqId(keyList.toArray(new String[0]));
-        } else if (dubboInfo instanceof DubboRoute) {
-            List<String> keyList = new ArrayList<>(16);
-//            keyList.addAll(((DubboRoute) dubboInfo).getAttributeMap().keySet());
-            keyList.add(dubboInfo.getIp());
-            keyList.add(String.valueOf(dubboInfo.getPort()));
-            keyList.add(dubboInfo.getInterfaceName());
-            keyList.add(dubboInfo.getVersion());
-            id = generateUniqId(keyList.toArray(new String[0]));
-        }
+        String id = generateInterfaceUniqId(dubboInfo);
         dubboInfo.setId(id);
         return id;
     }
@@ -189,7 +173,7 @@ public class DubboAdminTool {
     public static URL convertURL(DubboOverride dubboOverride) {
         StringBuilder sb = new StringBuilder();
         sb.append(Constants.OVERRIDE_PROTOCOL).append("://");
-        if(! com.alibaba.dubbo.common.utils.StringUtils.isBlank(dubboOverride.getIp()) && ! Constants.ANY_VALUE.equals(dubboOverride.getIp())) {
+        if (!com.alibaba.dubbo.common.utils.StringUtils.isBlank(dubboOverride.getIp()) && ! Constants.ANY_VALUE.equals(dubboOverride.getIp())) {
             sb.append(dubboOverride.getIp());
         } else {
             sb.append(Constants.ANYHOST_VALUE);
@@ -202,7 +186,7 @@ public class DubboAdminTool {
         param.put(Constants.CATEGORY_KEY, Constants.CONFIGURATORS_CATEGORY);
         param.put(Constants.ENABLED_KEY, String.valueOf(dubboOverride.isEnabled()));
         param.put(Constants.DYNAMIC_KEY, String.valueOf(dubboOverride.isDynamic()));
-        if(!StringUtils.isBlank(dubboOverride.getApplication()) && !Constants.ANY_VALUE.equals(dubboOverride.getApplication())) {
+        if (!StringUtils.isBlank(dubboOverride.getApplication()) && !Constants.ANY_VALUE.equals(dubboOverride.getApplication())) {
             param.put(Constants.APPLICATION_KEY, dubboOverride.getApplication());
         }
         if (StringUtils.isNotBlank(dubboOverride.getVersion())) {
@@ -224,11 +208,63 @@ public class DubboAdminTool {
                 (Constants.ANY_VALUE.equals(removedInfo.getVersion()) || removedInfo.getVersion().equals(compareInfo.getVersion()));
     }
 
+    public static DubboOverride mergeOverride(DubboOverride baseOverride, DubboOverride mergeOverride) {
+        if (baseOverride == null && mergeOverride == null) {
+            return null;
+        }
+        if (baseOverride ==null) {
+            return mergeOverride;
+        }
+        //如果当前没有生效，merge的也没有生效那么不需要做什么
+        if (!baseOverride.isEnabled() && !mergeOverride.isEnabled()) {
+            return baseOverride;
+        }
+        //如果当前没有生效，merge的是生效，那么更新成生效的
+        if (!baseOverride.isEnabled() && mergeOverride.isEnabled()) {
+            return mergeOverride;
+        }
+        //当前是生效状态
+        long baseTimeMills = baseOverride.getLongAttribute(Constants.TIMESTAMP_KEY, 0);
+        long mergeTimeMills = mergeOverride.getLongAttribute(Constants.TIMESTAMP_KEY, 0);
+        /** 如果merge的也是生效
+         *      共有属性按最新时间更新
+         *      merge独有属性需更新到base
+         */
+        if (mergeOverride.isEnabled()) {
+            for (Map.Entry<String, String> entry : mergeOverride.getAttributeMap().entrySet()) {
+                String key = entry.getKey();
+                String val = entry.getValue();
+                String baseVal = baseOverride.getAttributeMap().get(key);
+                if (baseVal == null || mergeTimeMills > baseTimeMills) {
+                    baseOverride.getAttributeMap().put(key, val);
+                }
+            }
+            return baseOverride;
+        }
+
+        /** 如果merge的是失效
+         *      共有属性移除，如果移除后原规则变为无规则那么变为失效
+         */
+        if (baseTimeMills > mergeTimeMills) {
+            return baseOverride;
+        }
+        for (Map.Entry<String, String> entry : mergeOverride.getAttributeMap().entrySet()) {
+            String key = entry.getKey();
+            baseOverride.getAttributeMap().remove(key);
+        }
+        if (baseOverride.getAttributeMap().size() == 0) {
+            baseOverride.setEnabled(false);
+            baseOverride.getAttributeMap().put(Constants.TIMESTAMP_KEY, String.valueOf(mergeTimeMills));
+        }
+
+        return baseOverride;
+    }
+
     public static <E> Set<E> newSet(int expectSize) {
         return new HashSet<>(capacity(expectSize));
     }
 
-    public static <K,V> Map<K,V> newMap(int expectSize) {
+    public static <K, V> Map<K, V> newMap(int expectSize) {
         return new HashMap<>(capacity(expectSize));
     }
 
@@ -236,7 +272,7 @@ public class DubboAdminTool {
         if (expectedSize < 3) {
             return expectedSize + 1;
         } else {
-            return expectedSize < 1073741824 ? (int)((float)expectedSize / 0.75F + 1.0F) : 2147483647;
+            return expectedSize < 1073741824 ? (int) ((float) expectedSize / 0.75F + 1.0F) : 2147483647;
         }
     }
 

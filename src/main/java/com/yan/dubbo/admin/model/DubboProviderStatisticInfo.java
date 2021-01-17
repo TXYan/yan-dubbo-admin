@@ -12,14 +12,13 @@ public class DubboProviderStatisticInfo implements Serializable {
 
     private String ip;
     private int port;
-    private int interfaceCount;//共有多少个接口
-    private int enabledInterfaceCount;//几个启用
-    private int disabledInterfaceCount;//几个禁用
+    private int interfaceCount; //共有多少个接口
+    private int enabledInterfaceCount; //几个启用
+    private int disabledInterfaceCount; //几个禁用
     //启用接口的权重分布
     private Map<Integer, Integer> weightCountMap = new HashMap<>();
 
     public DubboProviderStatisticInfo() {
-
     }
 
     public DubboProviderStatisticInfo(String ip, int port) {

@@ -11,7 +11,7 @@ public class DubboConsumer extends DubboInfo {
     private String application;
     private String methods;
 
-    private boolean check;//check > default.check
+    private boolean check; //check > default.check
     private long pid;
     private String filter;
 

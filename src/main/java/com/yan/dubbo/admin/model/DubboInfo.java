@@ -12,7 +12,7 @@ public class DubboInfo implements Serializable, Cloneable {
     private String category;
     private String protocol;
     private String ip;
-    private int port;//consumer 没有port
+    private int port; //consumer 没有port
     private String interfaceName;
     private String version;
 
