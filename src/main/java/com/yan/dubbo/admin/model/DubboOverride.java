@@ -2,6 +2,7 @@ package com.yan.dubbo.admin.model;
 
 import com.alibaba.dubbo.common.Constants;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,6 +59,11 @@ public class DubboOverride extends DubboInfo {
 
     public void setAttribute(String attr, String val) {
         attributeMap.put(attr, val);
+    }
+
+    public long getLongAttribute(String attr, long defaultVal) {
+        String strVal = attributeMap.get(attr);
+        return NumberUtils.toLong(strVal, defaultVal);
     }
 
     public String getApplication() {

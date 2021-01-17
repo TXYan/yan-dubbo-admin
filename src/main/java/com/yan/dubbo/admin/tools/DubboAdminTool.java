@@ -23,7 +23,7 @@ public final class DubboAdminTool {
         if (keys == null) {
             return "";
         }
-        List<String> keyList = Stream.of(keys).sorted().collect(Collectors.toList());
+        List<String> keyList = Stream.of(keys)/*.sorted()*/.collect(Collectors.toList());
         //暂时不对字符串做摘要，明文排查问题方便
         return StringUtils.join(keyList, ":");
     }
@@ -40,26 +40,7 @@ public final class DubboAdminTool {
             return "";
         }
 
-        String id = "";
-        if (dubboInfo instanceof DubboProvider || dubboInfo instanceof DubboConsumer) {
-            id = generateUniqId(dubboInfo.getIp(), String.valueOf(dubboInfo.getPort()), dubboInfo.getInterfaceName(), dubboInfo.getVersion());
-        } else if (dubboInfo instanceof DubboOverride) {
-            List<String> keyList = new ArrayList<>(16);
-            keyList.addAll(((DubboOverride) dubboInfo).getAttributeMap().keySet());
-            keyList.add(dubboInfo.getIp());
-            keyList.add(String.valueOf(dubboInfo.getPort()));
-            keyList.add(dubboInfo.getInterfaceName());
-            keyList.add(dubboInfo.getVersion());
-            id = generateUniqId(keyList.toArray(new String[0]));
-        } else if (dubboInfo instanceof DubboRoute) {
-            List<String> keyList = new ArrayList<>(16);
-//            keyList.addAll(((DubboRoute) dubboInfo).getAttributeMap().keySet());
-            keyList.add(dubboInfo.getIp());
-            keyList.add(String.valueOf(dubboInfo.getPort()));
-            keyList.add(dubboInfo.getInterfaceName());
-            keyList.add(dubboInfo.getVersion());
-            id = generateUniqId(keyList.toArray(new String[0]));
-        }
+        String id = generateInterfaceUniqId(dubboInfo);
         dubboInfo.setId(id);
         return id;
     }
@@ -225,6 +206,58 @@ public final class DubboAdminTool {
                 (removedInfo.getPort() <= 0 || removedInfo.getPort() == compareInfo.getPort()) &&
                 removedInfo.getInterfaceName().equals(compareInfo.getInterfaceName()) &&
                 (Constants.ANY_VALUE.equals(removedInfo.getVersion()) || removedInfo.getVersion().equals(compareInfo.getVersion()));
+    }
+
+    public static DubboOverride mergeOverride(DubboOverride baseOverride, DubboOverride mergeOverride) {
+        if (baseOverride == null && mergeOverride == null) {
+            return null;
+        }
+        if (baseOverride ==null) {
+            return mergeOverride;
+        }
+        //如果当前没有生效，merge的也没有生效那么不需要做什么
+        if (!baseOverride.isEnabled() && !mergeOverride.isEnabled()) {
+            return baseOverride;
+        }
+        //如果当前没有生效，merge的是生效，那么更新成生效的
+        if (!baseOverride.isEnabled() && mergeOverride.isEnabled()) {
+            return mergeOverride;
+        }
+        //当前是生效状态
+        long baseTimeMills = baseOverride.getLongAttribute(Constants.TIMESTAMP_KEY, 0);
+        long mergeTimeMills = mergeOverride.getLongAttribute(Constants.TIMESTAMP_KEY, 0);
+        /** 如果merge的也是生效
+         *      共有属性按最新时间更新
+         *      merge独有属性需更新到base
+         */
+        if (mergeOverride.isEnabled()) {
+            for (Map.Entry<String, String> entry : mergeOverride.getAttributeMap().entrySet()) {
+                String key = entry.getKey();
+                String val = entry.getValue();
+                String baseVal = baseOverride.getAttributeMap().get(key);
+                if (baseVal == null || mergeTimeMills > baseTimeMills) {
+                    baseOverride.getAttributeMap().put(key, val);
+                }
+            }
+            return baseOverride;
+        }
+
+        /** 如果merge的是失效
+         *      共有属性移除，如果移除后原规则变为无规则那么变为失效
+         */
+        if (baseTimeMills > mergeTimeMills) {
+            return baseOverride;
+        }
+        for (Map.Entry<String, String> entry : mergeOverride.getAttributeMap().entrySet()) {
+            String key = entry.getKey();
+            baseOverride.getAttributeMap().remove(key);
+        }
+        if (baseOverride.getAttributeMap().size() == 0) {
+            baseOverride.setEnabled(false);
+            baseOverride.getAttributeMap().put(Constants.TIMESTAMP_KEY, String.valueOf(mergeTimeMills));
+        }
+
+        return baseOverride;
     }
 
     public static <E> Set<E> newSet(int expectSize) {
